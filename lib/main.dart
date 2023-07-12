@@ -1,3 +1,5 @@
+import 'dart:async';
+import 'dart:math';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
@@ -57,6 +59,7 @@ class _MyHomePageState extends State<MyHomePage>
   bool _showNameInput = true;
   late TextEditingController _nameController;
   late AnimationController _animationController;
+  late Timer _timer;
 
   @override
   void initState() {
@@ -93,6 +96,7 @@ class _MyHomePageState extends State<MyHomePage>
       body: Stack(
         fit: StackFit.expand,
         children: [
+          // Background gradient and blur container
           AnimatedBuilder(
             animation: _animationController,
             builder: (context, child) {
@@ -127,30 +131,41 @@ class _MyHomePageState extends State<MyHomePage>
               ),
             ),
           ),
+          Positioned(
+            top: MediaQuery.of(context).size.height * 0.2,
+            left: 0,
+            right: 0,
+            child: const Center(
+              child: Text(
+                'Trivia',
+                style: TextStyle(
+                  fontSize: 32,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ),
           Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text(
-                  widget.title,
-                  style: TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
                 const SizedBox(height: 16),
-                _showNameInput
-                    ? Card(
-                        color: Colors.white.withOpacity(0.6),
-                        elevation: 4,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(16),
-                        ),
-                        child: Column(
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.all(20.0),
-                              child: SizedBox(
+                AnimatedSwitcher(
+                  duration: const Duration(milliseconds: 500),
+                  child: _showNameInput
+                      ? // Name input card
+                      Card(
+                          key: const ValueKey('nameInput'),
+                          color: Colors.white.withOpacity(0.6),
+                          elevation: 4,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                          child: Column(
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.all(20.0),
+                                child: SizedBox(
                                   width: 250,
                                   child: Column(
                                     children: [
@@ -174,22 +189,17 @@ class _MyHomePageState extends State<MyHomePage>
                                         child: const Text('Submit'),
                                       ),
                                     ],
-                                  )),
-                            ),
-                          ],
-                        ),
-                      )
-                    : Card(
-                        elevation: 4,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(16),
-                        ),
-                        margin: const EdgeInsets.all(16),
-                        child: Padding(
-                          padding: const EdgeInsets.all(16.0),
-                          child: MyButton(socket: socket),
-                        ),
-                      ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        )
+                      : // "Press me" button
+                      Column(children: [
+                          MyButton(socket: socket),
+                        ]),
+                ),
               ],
             ),
           ),
