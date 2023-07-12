@@ -1,5 +1,3 @@
-import 'dart:async';
-import 'dart:math';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
@@ -59,7 +57,6 @@ class _MyHomePageState extends State<MyHomePage>
   bool _showNameInput = true;
   late TextEditingController _nameController;
   late AnimationController _animationController;
-  late Timer _timer;
 
   @override
   void initState() {
